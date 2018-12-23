@@ -1,0 +1,12 @@
+[
+  {
+    "HomeWorks": [
+      {
+        "DueDate": "2018-12-04T00:00:00",
+        "Status": 0,
+        "Title": "new homework"
+      }
+    ],
+    "Title": "new class"
+  }
+]
