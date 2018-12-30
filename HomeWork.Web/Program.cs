@@ -7,7 +7,7 @@ namespace HomeWork.Web
     {
         public static void Main(string[] args) => CreateWebHostBuilder(args).Build().Run();
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args).UseStartup<Startup>().UseUrls(Properties.Resources.Url);
+        private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args).UseStartup<Startup>();
     }
 }

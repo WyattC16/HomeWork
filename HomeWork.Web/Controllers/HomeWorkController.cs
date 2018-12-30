@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace HomeWork.Web.Controllers
 {
-    public class HomeWorkController : BaseController
+    public class HomeWorkController : BaseJsonController
     {
 
         public HomeWorkController(IHostingEnvironment iHostingEnvironment) : base(iHostingEnvironment)
@@ -48,7 +48,7 @@ namespace HomeWork.Web.Controllers
                 newClass.HomeWorks.AddRange(homeWorks);
                 Classes[Classes.IndexOf(originalClass)] = newClass;
             }
-            await SaveJson();
+            await SaveData();
         }
 
         [HttpPost("{class}/{homework}")]
@@ -73,7 +73,7 @@ namespace HomeWork.Web.Controllers
                 newClass.HomeWorks.Add(homeWork);
                 Classes[Classes.IndexOf(originalClass)] = newClass;
             }
-            await SaveJson();
+            await SaveData();
         }
     }
 }

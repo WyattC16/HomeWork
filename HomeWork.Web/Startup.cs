@@ -36,14 +36,14 @@ namespace HomeWork.Web
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             (env.IsDevelopment() ? 
-                    app.UseDeveloperExceptionPage() : 
+                    app.UseDeveloperExceptionPage()
+                        .UseSwagger()
+                        .UseSwaggerUI(c =>
+                        {
+                            c.SwaggerEndpoint("/swagger/v1/swagger.json", "HomeWork Controllers V1");
+                            c.RoutePrefix = "controllers/swagger";
+                        }) : 
                     app.UseExceptionHandler("/Error").UseHsts())
-                .UseSwagger()
-                .UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "HomeWork Controllers V1");
-                    c.RoutePrefix = "controllers/swagger";
-                })
                 .UseHttpsRedirection()
                 .UseStaticFiles()
                 .UseCookiePolicy()

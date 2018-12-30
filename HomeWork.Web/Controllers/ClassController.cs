@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeWork.Web.Controllers
 {
-    public class ClassController : BaseController
+    public class ClassController : BaseJsonController
     {
         public ClassController(IHostingEnvironment iHostingEnvironment) : base(iHostingEnvironment)
         {
@@ -19,7 +19,7 @@ namespace HomeWork.Web.Controllers
         public async void Post([FromBody] SchoolClass schoolClass)
         {
             Classes.Add(schoolClass);
-            await SaveJson();
+            await SaveData();
         }
         
         [HttpPut]
@@ -30,7 +30,7 @@ namespace HomeWork.Web.Controllers
             {
                 var classToReplace = Classes.Single(x => x.Title == schoolClass.Title);
                 Classes[Classes.IndexOf(classToReplace)] = schoolClass;
-                await SaveJson();
+                await SaveData();
                 return;
             }
             Post(schoolClass);

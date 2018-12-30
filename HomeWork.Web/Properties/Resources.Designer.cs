@@ -61,7 +61,7 @@ namespace HomeWork.Web.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://localhost:44382.
+        ///   Looks up a localized string similar to https://localhost:44382/.
         /// </summary>
         internal static string Url {
             get {

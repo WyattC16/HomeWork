@@ -1,44 +1,30 @@
 ﻿@page
-@using HomeWork.Web.Models.Enum
-@using Microsoft.EntityFrameworkCore.Internal
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
 
 <div class="row" id="Classes" width="100%">
-    @* ReSharper disable once Html.Obsolete *@
     @foreach (var table in IndexModel.Classes)
     {
-        <table border="1" style="float: left">
+        <table style="float: left;border:@IndexModel.BorderColor">
             <tr>
-                <th width:100%>HomeWork Title</th>
-                <th width:100%>Due Date</th>
-                <th width:100%>Status</th>
+                <th style="border:@IndexModel.BorderColor" width:100%>@table.Title</th>
+                <th style="border:@IndexModel.BorderColor" width:100%>Due Date</th>
+                <th style="border:@IndexModel.BorderColor" width:100%>Status</th>
             </tr>
             @foreach (var homeWork in table.HomeWorks)
             {
-                <tr>
-                    <td contenteditable width:100%>@homeWork.Title</td>
-                    <td width:100%>
-                        <input type="date" style="border: none;" value="@homeWork.DueDate.ToString("yyyy-MM-dd")"/>
+                <tr style="border:@IndexModel.BorderColor background: @IndexModel.Color(homeWork.DueDate)">
+                    <td contenteditable width:100% style="border:@IndexModel.BorderColor">@homeWork.Title</td>
+                    <td width:100% style="border:@IndexModel.BorderColor">
+                        <input type="date" style="border: none; background: @IndexModel.Color(homeWork.DueDate);" value="@homeWork.DueDate.ToString("yyyy-MM-dd")"/>
                     </td>
-                    <td width:100%>
-                        <select style="border: none;">
-                            @foreach (var status in Enum.GetValues(typeof(Status)))
+                    <td width:100% style="border:@IndexModel.BorderColor">
+                        <select style="border: none; background: @IndexModel.Color(homeWork.DueDate);">
+                            @foreach (Models.Enum.Status status in Enum.GetValues(typeof(Models.Enum.Status)))
                             {
-                                if (((Enum)status).ToString("F").Equals(homeWork.Status.ToString("F")))
-                                {
-                                    <option selected="selected">
-                                        @(((Status)status).ToString("F").SplitByUpperCase().Join(" ").ToProper())
-                                    </option>
-                                }
-                                else
-                                {
-                                    <option>
-                                        @(((Status)status).ToString("F").SplitByUpperCase().Join(" ").ToProper())
-                                    </option>
-                                }
+                                @:<option @IndexModel.SelectedOption(status, homeWork.Status)> @IndexModel.FormatStatus(status) </option>
                             }
                         </select>
                     </td>
