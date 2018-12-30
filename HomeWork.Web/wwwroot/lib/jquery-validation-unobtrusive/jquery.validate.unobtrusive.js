@@ -1,15 +1,15 @@
 // Unobtrusive validation support library for jQuery and jQuery Validate
-// Copyright (C) Microsoft Corporation. All rights reserved.
-// @version v3.2.9
+// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// @version v3.2.11
 
 /*jslint white: true, browser: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true, strict: false */
 /*global document: false, jQuery: false */
 
-// ReSharper disable UnusedParameter
 (function (factory) {
-    if (typeof window.define === 'function' && window.define.amd) {
+    if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        window.define("jquery.validate.unobtrusive", ['jquery.validation'], factory);
+        define("jquery.validate.unobtrusive", ['jquery-validation'], factory);
     } else if (typeof module === 'object' && module.exports) {
         // CommonJS-like environments that support module.exports     
         module.exports = factory(require('jquery-validation'));
@@ -20,7 +20,7 @@
 }(function ($) {
     var $jQval = $.validator,
         adapters,
-        dataValidation = "unobtrusiveValidation";
+        data_validation = "unobtrusiveValidation";
 
     function setValidationValues(options, ruleName, value) {
         options.rules[ruleName] = value;
@@ -59,7 +59,6 @@
 
         if (replace) {
             container.empty();
-// ReSharper disable once UnknownCssClass
             error.removeClass("input-validation-error").appendTo(container);
         }
         else {
@@ -119,12 +118,12 @@
             .removeClass("field-validation-error")
             .removeData("unobtrusiveContainer")
             .find(">*")  // If we were using valmsg-replace, get the underlying error
-                .removeData("unobtrusiveContainer");
+            .removeData("unobtrusiveContainer");
     }
 
     function validationInfo(form) {
         var $form = $(form),
-            result = $form.data(dataValidation),
+            result = $form.data(data_validation),
             onResetProxy = $.proxy(onReset, form),
             defaultOptions = $jQval.unobtrusive.options || {},
             execInContext = function (name, args) {
@@ -154,8 +153,8 @@
                 },
                 attachValidation: function () {
                     $form
-                        .off("reset." + dataValidation, onResetProxy)
-                        .on("reset." + dataValidation, onResetProxy)
+                        .off("reset." + data_validation, onResetProxy)
+                        .on("reset." + data_validation, onResetProxy)
                         .validate(this.options);
                 },
                 validate: function () {  // a validation function that is called by unobtrusive Ajax
@@ -163,7 +162,7 @@
                     return $form.valid();
                 }
             };
-            $form.data(dataValidation, result);
+            $form.data(data_validation, result);
         }
 
         return result;
@@ -235,10 +234,10 @@
             // element with data-val=true
             var $selector = $(selector),
                 $forms = $selector.parents()
-                                  .addBack()
-                                  .filter("form")
-                                  .add($selector.find("form"))
-                                  .has("[data-val=true]");
+                    .addBack()
+                    .filter("form")
+                    .add($selector.find("form"))
+                    .has("[data-val=true]");
 
             $selector.find("[data-val=true]").each(function () {
                 $jQval.unobtrusive.parseElement(this, true);
@@ -354,7 +353,6 @@
             match = value.match(/\W/g);
             match = match && match.length >= nonalphamin;
         }
-// ReSharper disable once UsageOfPossiblyUnassignedValue
         return match;
     });
 
@@ -431,5 +429,4 @@
     });
 
     return $jQval.unobtrusive;
-    }));
-// ReSharper restore UnusedParameter
+}));

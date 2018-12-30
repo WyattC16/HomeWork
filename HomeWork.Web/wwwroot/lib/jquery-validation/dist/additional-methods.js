@@ -7,12 +7,12 @@
  * Released under the MIT license
  */
 (function( factory ) {
-	if ( typeof window.define === "function" && window.define.amd ) {
-		window.define( ["jquery", "./jquery.validate"], factory );
+	if ( typeof define === "function" && define.amd ) {
+		define( ["jquery", "./jquery.validate"], factory );
 	} else if (typeof module === "object" && module.exports) {
 		module.exports = factory( require( "jquery" ) );
 	} else {
-		factory( window.jQuery );
+		factory( jQuery );
 	}
 }(function( $ ) {
 
@@ -202,12 +202,12 @@ $.validator.addMethod( "cifES", function( value, element ) {
 	var letter  = value.substring( 0, 1 ), // [ T ]
 		number  = value.substring( 1, 8 ), // [ P ][ P ][ N ][ N ][ N ][ N ][ N ]
 		control = value.substring( 8, 9 ), // [ C ]
-// ReSharper disable AssignedValueIsNeverUsed
-		allSum = 0,
-		evenSum = 0,
-		oddSum = 0,
+		all_sum = 0,
+		even_sum = 0,
+		odd_sum = 0,
 		i, n,
-		controlDigit;
+		control_digit,
+		control_letter;
 
 	function isOdd( n ) {
 		return n % 2 === 0;
@@ -228,31 +228,31 @@ $.validator.addMethod( "cifES", function( value, element ) {
 			n *= 2;
 
 			// If the multiplication is bigger than 10 we need to adjust
-			oddSum += n < 10 ? n : n - 9;
+			odd_sum += n < 10 ? n : n - 9;
 
 		// Even positions
 		// Just sum them
 		} else {
-			evenSum += n;
+			even_sum += n;
 		}
 	}
 
-	allSum = evenSum + oddSum;
-	controlDigit = ( 10 - ( allSum ).toString().substr( -1 ) ).toString();
-	controlDigit = parseInt( controlDigit, 10 ) > 9 ? "0" : controlDigit;
-	var controlLetter = "JABCDEFGHI".substr( controlDigit, 1 ).toString();
+	all_sum = even_sum + odd_sum;
+	control_digit = ( 10 - ( all_sum ).toString().substr( -1 ) ).toString();
+	control_digit = parseInt( control_digit, 10 ) > 9 ? "0" : control_digit;
+	control_letter = "JABCDEFGHI".substr( control_digit, 1 ).toString();
 
 	// Control must be a digit
 	if ( letter.match( /[ABEH]/ ) ) {
-		return control === controlDigit;
+		return control === control_digit;
 
 	// Control must be a letter
 	} else if ( letter.match( /[KPQS]/ ) ) {
-		return control === controlLetter;
+		return control === control_letter;
 	}
 
 	// Can be either
-	return control === controlDigit || control === controlLetter;
+	return control === control_digit || control === control_letter;
 
 }, "Please specify a valid CIF number." );
 
@@ -271,10 +271,10 @@ $.validator.addMethod( "cpfBR", function( value ) {
 	}
 
 	var sum = 0,
-		firstCn, secondCn, checkResult, i;
+		firstCN, secondCN, checkResult, i;
 
-	firstCn = parseInt( value.substring( 9, 10 ), 10 );
-	secondCn = parseInt( value.substring( 10, 11 ), 10 );
+	firstCN = parseInt( value.substring( 9, 10 ), 10 );
+	secondCN = parseInt( value.substring( 10, 11 ), 10 );
 
 	checkResult = function( sum, cn ) {
 		var result = ( sum * 10 ) % 11;
@@ -306,12 +306,12 @@ $.validator.addMethod( "cpfBR", function( value ) {
 	}
 
 	// If first Check Number (CN) is valid, move to Step 2 - using second Check Number:
-	if ( checkResult( sum, firstCn ) ) {
+	if ( checkResult( sum, firstCN ) ) {
 		sum = 0;
 		for ( i = 1; i <= 10; i++ ) {
 			sum = sum + parseInt( value.substring( i - 1, i ), 10 ) * ( 12 - i );
 		}
-		return checkResult( sum, secondCn );
+		return checkResult( sum, secondCN );
 	}
 	return false;
 
@@ -398,31 +398,34 @@ $.validator.addMethod( "creditcardtypes", function( value, element, param ) {
 	if ( param.all ) {
 		validTypes = 0x0001 | 0x0002 | 0x0004 | 0x0008 | 0x0010 | 0x0020 | 0x0040 | 0x0080;
 	}
-	if ( /^(5[12345])/.test( value ) ) { // Mastercard
+	if ( validTypes & 0x0001 && /^(5[12345])/.test( value ) ) { // Mastercard
 		return value.length === 16;
 	}
-	if ( /^(4)/.test( value ) ) { // Visa
+	if ( validTypes & 0x0002 && /^(4)/.test( value ) ) { // Visa
 		return value.length === 16;
 	}
-	if ( /^(3[47])/.test( value ) ) { // Amex
+	if ( validTypes & 0x0004 && /^(3[47])/.test( value ) ) { // Amex
 		return value.length === 15;
 	}
-	if ( /^(3(0[012345]|[68]))/.test( value ) ) { // Dinersclub
+	if ( validTypes & 0x0008 && /^(3(0[012345]|[68]))/.test( value ) ) { // Dinersclub
 		return value.length === 14;
 	}
-	if ( /^(2(014|149))/.test( value ) ) { // Enroute
+	if ( validTypes & 0x0010 && /^(2(014|149))/.test( value ) ) { // Enroute
 		return value.length === 15;
 	}
-	if ( /^(6011)/.test( value ) ) { // Discover
+	if ( validTypes & 0x0020 && /^(6011)/.test( value ) ) { // Discover
 		return value.length === 16;
 	}
-	if ( /^(3)/.test( value ) ) { // Jcb
+	if ( validTypes & 0x0040 && /^(3)/.test( value ) ) { // Jcb
 		return value.length === 16;
 	}
-	if ( /^(2131|1800)/.test( value ) ) { // Jcb
+	if ( validTypes & 0x0040 && /^(2131|1800)/.test( value ) ) { // Jcb
 		return value.length === 15;
-    }
-    return true;
+	}
+	if ( validTypes & 0x0080 ) { // Unknown
+		return true;
+	}
+	return false;
 }, "Please enter a valid credit card number." );
 
 /**
@@ -554,8 +557,8 @@ $.validator.addMethod( "iban", function( value, element ) {
 	// country code ISO 3166-1 - two letters,
 	// two check digits,
 	// Basic Bank Account Number (BBAN) - up to 30 chars
-	var minimalIbaNlength = 5;
-	if ( iban.length < minimalIbaNlength ) {
+	var minimalIBANlength = 5;
+	if ( iban.length < minimalIBANlength ) {
 		return false;
 	}
 
@@ -697,10 +700,10 @@ $.validator.addMethod( "mobileNL", function( value, element ) {
  * A number of very detailed GB telephone number RegEx patterns can also be found at:
  * http://www.aa-asterisk.org.uk/index.php/Regular_Expressions_for_Validating_and_Formatting_GB_Telephone_Numbers
  */
-$.validator.addMethod( "mobileUK", function( phoneNumber, element ) {
-	phoneNumber = phoneNumber.replace( /\(|\)|\s+|-/g, "" );
-	return this.optional( element ) || phoneNumber.length > 9 &&
-		phoneNumber.match( /^(?:(?:(?:00\s?|\+)44\s?|0)7(?:[1345789]\d{2}|624)\s?\d{3}\s?\d{3})$/ );
+$.validator.addMethod( "mobileUK", function( phone_number, element ) {
+	phone_number = phone_number.replace( /\(|\)|\s+|-/g, "" );
+	return this.optional( element ) || phone_number.length > 9 &&
+		phone_number.match( /^(?:(?:(?:00\s?|\+)44\s?|0)7(?:[1345789]\d{2}|624)\s?\d{3}\s?\d{3})$/ );
 }, "Please specify a valid mobile number" );
 
 $.validator.addMethod( "netmask", function( value, element ) {
@@ -849,10 +852,10 @@ $.validator.addMethod( "phoneNL", function( value, element ) {
  */
 
 // Matches UK landline + mobile, accepting only 01-3 for landline or 07 for mobile to exclude many premium numbers
-$.validator.addMethod( "phonesUK", function( phoneNumber, element ) {
-	phoneNumber = phoneNumber.replace( /\(|\)|\s+|-/g, "" );
-	return this.optional( element ) || phoneNumber.length > 9 &&
-		phoneNumber.match( /^(?:(?:(?:00\s?|\+)44\s?|0)(?:1\d{8,9}|[23]\d{9}|7(?:[1345789]\d{8}|624\d{6})))$/ );
+$.validator.addMethod( "phonesUK", function( phone_number, element ) {
+	phone_number = phone_number.replace( /\(|\)|\s+|-/g, "" );
+	return this.optional( element ) || phone_number.length > 9 &&
+		phone_number.match( /^(?:(?:(?:00\s?|\+)44\s?|0)(?:1\d{8,9}|[23]\d{9}|7(?:[1345789]\d{8}|624\d{6})))$/ );
 }, "Please specify a valid uk phone number" );
 
 /* For UK phone functions, do the following server side processing:
@@ -863,10 +866,10 @@ $.validator.addMethod( "phonesUK", function( phoneNumber, element ) {
  * A number of very detailed GB telephone number RegEx patterns can also be found at:
  * http://www.aa-asterisk.org.uk/index.php/Regular_Expressions_for_Validating_and_Formatting_GB_Telephone_Numbers
  */
-$.validator.addMethod( "phoneUK", function( phoneNumber, element ) {
-	phoneNumber = phoneNumber.replace( /\(|\)|\s+|-/g, "" );
-	return this.optional( element ) || phoneNumber.length > 9 &&
-		phoneNumber.match( /^(?:(?:(?:00\s?|\+)44\s?)|(?:\(?0))(?:\d{2}\)?\s?\d{4}\s?\d{4}|\d{3}\)?\s?\d{3}\s?\d{3,4}|\d{4}\)?\s?(?:\d{5}|\d{3}\s?\d{3})|\d{5}\)?\s?\d{4,5})$/ );
+$.validator.addMethod( "phoneUK", function( phone_number, element ) {
+	phone_number = phone_number.replace( /\(|\)|\s+|-/g, "" );
+	return this.optional( element ) || phone_number.length > 9 &&
+		phone_number.match( /^(?:(?:(?:00\s?|\+)44\s?)|(?:\(?0))(?:\d{2}\)?\s?\d{4}\s?\d{4}|\d{3}\)?\s?\d{3}\s?\d{3,4}|\d{4}\)?\s?(?:\d{5}|\d{3}\s?\d{3})|\d{5}\)?\s?\d{4,5})$/ );
 }, "Please specify a valid phone number" );
 
 /**
@@ -885,10 +888,10 @@ $.validator.addMethod( "phoneUK", function( phoneNumber, element ) {
  * and not
  * 212 123 4567
  */
-$.validator.addMethod( "phoneUS", function( phoneNumber, element ) {
-	phoneNumber = phoneNumber.replace( /\s+/g, "" );
-	return this.optional( element ) || phoneNumber.length > 9 &&
-		phoneNumber.match( /^(\+?1-?)?(\([2-9]([02-9]\d|1[02-9])\)|[2-9]([02-9]\d|1[02-9]))-?[2-9]([02-9]\d|1[02-9])-?\d{4}$/ );
+$.validator.addMethod( "phoneUS", function( phone_number, element ) {
+	phone_number = phone_number.replace( /\s+/g, "" );
+	return this.optional( element ) || phone_number.length > 9 &&
+		phone_number.match( /^(\+?1-?)?(\([2-9]([02-9]\d|1[02-9])\)|[2-9]([02-9]\d|1[02-9]))-?[2-9]([02-9]\d|1[02-9])-?\d{4}$/ );
 }, "Please specify a valid phone number" );
 
 /*
@@ -899,8 +902,8 @@ $.validator.addMethod( "phoneUS", function( phoneNumber, element ) {
 * 99.999-999
 * 99999999
 */
-$.validator.addMethod( "postalcodeBR", function( cepValue, element ) {
-	return this.optional( element ) || /^\d{2}.\d{3}-\d{3}?$|^\d{5}-?\d{3}?$/.test( cepValue );
+$.validator.addMethod( "postalcodeBR", function( cep_value, element ) {
+	return this.optional( element ) || /^\d{2}.\d{3}-\d{3}?$|^\d{5}-?\d{3}?$/.test( cep_value );
 }, "Informe um CEP válido." );
 
 /**
@@ -1052,7 +1055,6 @@ $.validator.addMethod( "skip_or_fill_minimum", function( value, element, options
  */
 $.validator.addMethod( "stateUS", function( value, element, options ) {
 	var isDefault = typeof options === "undefined",
-// ReSharper disable QualifiedExpressionMaybeNull
 		caseSensitive = ( isDefault || typeof options.caseSensitive === "undefined" ) ? false : options.caseSensitive,
 		includeTerritories = ( isDefault || typeof options.includeTerritories === "undefined" ) ? false : options.includeTerritories,
 		includeMilitary = ( isDefault || typeof options.includeMilitary === "undefined" ) ? false : options.includeMilitary,
@@ -1107,14 +1109,14 @@ $.validator.addMethod( "vinUS", function( v ) {
 		return false;
 	}
 
-	var ll = [ "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" ],
-		vl = [ 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 7, 9, 2, 3, 4, 5, 6, 7, 8, 9 ],
-		fl = [ 8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2 ],
+	var LL = [ "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" ],
+		VL = [ 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 7, 9, 2, 3, 4, 5, 6, 7, 8, 9 ],
+		FL = [ 8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2 ],
 		rs = 0,
 		i, n, d, f, cd, cdv;
 
 	for ( i = 0; i < 17; i++ ) {
-		f = fl[ i ];
+		f = FL[ i ];
 		d = v.slice( i, i + 1 );
 		if ( i === 8 ) {
 			cdv = d;
@@ -1122,13 +1124,12 @@ $.validator.addMethod( "vinUS", function( v ) {
 		if ( !isNaN( d ) ) {
 			d *= f;
 		} else {
-			for ( n = 0; n < ll.length; n++ ) {
-				if ( d.toUpperCase() === ll[ n ] ) {
-					d = vl[ n ];
+			for ( n = 0; n < LL.length; n++ ) {
+				if ( d.toUpperCase() === LL[ n ] ) {
+					d = VL[ n ];
 					d *= f;
-// ReSharper disable UsageOfPossiblyUnassignedValue
 					if ( isNaN( cdv ) && n === 8 ) {
-						cdv = ll[ n ];
+						cdv = LL[ n ];
 					}
 					break;
 				}
@@ -1154,7 +1155,4 @@ $.validator.addMethod( "ziprange", function( value, element ) {
 	return this.optional( element ) || /^90[2-5]\d\{2\}-\d{4}$/.test( value );
 }, "Your ZIP-code must be in the range 902xx-xxxx to 905xx-xxxx" );
 return $;
-    }));
-// ReSharper restore QualifiedExpressionMaybeNull
-// ReSharper restore AssignedValueIsNeverUsed
-// ReSharper restore UsageOfPossiblyUnassignedValue
+}));

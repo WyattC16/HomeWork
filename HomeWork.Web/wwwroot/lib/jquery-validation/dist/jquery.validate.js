@@ -7,12 +7,12 @@
  * Released under the MIT license
  */
 (function( factory ) {
-	if ( typeof window.define === "function" && window.define.amd ) {
-		window.define( ["jquery"], factory );
+	if ( typeof define === "function" && define.amd ) {
+		define( ["jquery"], factory );
 	} else if (typeof module === "object" && module.exports) {
 		module.exports = factory( require( "jquery" ) );
 	} else {
-		factory( window.jQuery );
+		factory( jQuery );
 	}
 }(function( $ ) {
 
@@ -26,7 +26,6 @@ $.extend( $.fn, {
 			if ( options && options.debug && window.console ) {
 				console.warn( "Nothing selected, can't validate, returning nothing." );
 			}
-// ReSharper disable InconsistentFunctionReturns
 			return;
 		}
 
@@ -39,7 +38,6 @@ $.extend( $.fn, {
 		// Add novalidate tag if HTML5.
 		this.attr( "novalidate", "novalidate" );
 
-// ReSharper disable once InconsistentNaming
 		validator = new $.validator( options, this[ 0 ] );
 		$.data( this[ 0 ], "validator", validator );
 
@@ -52,7 +50,6 @@ $.extend( $.fn, {
 				validator.submitButton = event.currentTarget;
 
 				// Allow suppressing validation by adding a cancel class to the submit button
-// ReSharper disable once UnknownCssClass
 				if ( $( this ).hasClass( "cancel" ) ) {
 					validator.cancelSubmit = true;
 				}
@@ -256,7 +253,6 @@ $.validator.format = function( source, params ) {
 	if ( params === undefined ) {
 		return source;
 	}
-// ReSharper disable QualifiedExpressionMaybeNull
 	if ( arguments.length > 2 && params.constructor !== Array  ) {
 		params = $.makeArray( arguments ).slice( 1 );
 	}
@@ -582,16 +578,14 @@ $.extend( $.validator, {
 			var count = 0,
 				i;
 			for ( i in obj ) {
-		        if (obj.hasOwnProperty(i)) {
 
-		            // This check allows counting elements with empty error
-		            // message as invalid elements
-		            if (obj[i] !== undefined && obj[i] !== null && obj[i] !== false) {
-		                count++;
-		            }
-		        }
-		    }
-		    return count;
+				// This check allows counting elements with empty error
+				// message as invalid elements
+				if ( obj[ i ] !== undefined && obj[ i ] !== null && obj[ i ] !== false ) {
+					count++;
+				}
+			}
+			return count;
 		},
 
 		hideErrors: function() {
@@ -778,50 +772,39 @@ $.extend( $.validator, {
 			}
 
 			for ( method in rules ) {
-		        if (rules.hasOwnProperty(method)) {
-		            rule = { method: method, parameters: rules[method] };
-		            try {
-		                result = $.validator.methods[method].call(this, val, element, rule.parameters);
+				rule = { method: method, parameters: rules[ method ] };
+				try {
+					result = $.validator.methods[ method ].call( this, val, element, rule.parameters );
 
-		                // If a method indicates that the field is optional and therefore valid,
-		                // don't mark it as valid when there are no other rules
-		                if (result === "dependency-mismatch" && rulesCount === 1) {
-		                    dependencyMismatch = true;
-		                    continue;
-		                }
-		                dependencyMismatch = false;
+					// If a method indicates that the field is optional and therefore valid,
+					// don't mark it as valid when there are no other rules
+					if ( result === "dependency-mismatch" && rulesCount === 1 ) {
+						dependencyMismatch = true;
+						continue;
+					}
+					dependencyMismatch = false;
 
-		                if (result === "pending") {
-		                    this.toHide = this.toHide.not(this.errorsFor(element));
-		                    return;
-		                }
+					if ( result === "pending" ) {
+						this.toHide = this.toHide.not( this.errorsFor( element ) );
+						return;
+					}
 
-		                if (!result) {
-		                    this.formatAndAdd(element, rule);
-		                    return false;
-		                }
-		            } catch (e) {
-		                if (this.settings.debug && window.console) {
-		                    console.log("Exception occurred when checking element " +
-		                        element.id +
-		                        ", check the '" +
-		                        rule.method +
-		                        "' method.",
-		                        e);
-		                }
-		                if (e instanceof TypeError) {
-		                    e.message += ".  Exception occurred when checking element " +
-		                        element.id +
-		                        ", check the '" +
-		                        rule.method +
-		                        "' method.";
-		                }
+					if ( !result ) {
+						this.formatAndAdd( element, rule );
+						return false;
+					}
+				} catch ( e ) {
+					if ( this.settings.debug && window.console ) {
+						console.log( "Exception occurred when checking element " + element.id + ", check the '" + rule.method + "' method.", e );
+					}
+					if ( e instanceof TypeError ) {
+						e.message += ".  Exception occurred when checking element " + element.id + ", check the '" + rule.method + "' method.";
+					}
 
-		                throw e;
-		            }
-		        }
-		    }
-		    if ( dependencyMismatch ) {
+					throw e;
+				}
+			}
+			if ( dependencyMismatch ) {
 				return;
 			}
 			if ( this.objectLength( rules ) ) {
@@ -945,9 +928,9 @@ $.extend( $.validator, {
 		},
 
 		showLabel: function( element, message ) {
-			var place, group, errorId, v,
+			var place, group, errorID, v,
 				error = this.errorsFor( element ),
-				elementId = this.idOrName( element ),
+				elementID = this.idOrName( element ),
 				describedBy = $( element ).attr( "aria-describedby" );
 
 			if ( error.length ) {
@@ -961,7 +944,7 @@ $.extend( $.validator, {
 
 				// Create error element
 				error = $( "<" + this.settings.errorElement + ">" )
-					.attr( "id", elementId + "-error" )
+					.attr( "id", elementID + "-error" )
 					.addClass( this.settings.errorClass )
 					.html( message || "" );
 
@@ -985,20 +968,20 @@ $.extend( $.validator, {
 				if ( error.is( "label" ) ) {
 
 					// If the error is a label, then associate using 'for'
-					error.attr( "for", elementId );
+					error.attr( "for", elementID );
 
 					// If the element is not a child of an associated label, then it's necessary
 					// to explicitly apply aria-describedby
-				} else if ( error.parents( "label[for='" + this.escapeCssMeta( elementId ) + "']" ).length === 0 ) {
-					errorId = error.attr( "id" );
+				} else if ( error.parents( "label[for='" + this.escapeCssMeta( elementID ) + "']" ).length === 0 ) {
+					errorID = error.attr( "id" );
 
 					// Respect existing non-error aria-describedby
 					if ( !describedBy ) {
-						describedBy = errorId;
-					} else if ( !describedBy.match( new RegExp( "\\b" + this.escapeCssMeta( errorId ) + "\\b" ) ) ) {
+						describedBy = errorID;
+					} else if ( !describedBy.match( new RegExp( "\\b" + this.escapeCssMeta( errorID ) + "\\b" ) ) ) {
 
 						// Add to end of list if not already present
-						describedBy += " " + errorId;
+						describedBy += " " + errorID;
 					}
 					$( element ).attr( "aria-describedby", describedBy );
 
@@ -1227,29 +1210,27 @@ $.extend( $.validator, {
 			method, value;
 
 		for ( method in $.validator.methods ) {
-	        if ($.validator.methods.hasOwnProperty(method)) {
 
-	            // Support for <input required> in both html5 and older browsers
-	            if (method === "required") {
-	                value = element.getAttribute(method);
+			// Support for <input required> in both html5 and older browsers
+			if ( method === "required" ) {
+				value = element.getAttribute( method );
 
-	                // Some browsers return an empty string for the required attribute
-	                // and non-HTML5 browsers might have required="" markup
-	                if (value === "") {
-	                    value = true;
-	                }
+				// Some browsers return an empty string for the required attribute
+				// and non-HTML5 browsers might have required="" markup
+				if ( value === "" ) {
+					value = true;
+				}
 
-	                // Force non-HTML5 browsers to return bool
-	                value = !!value;
-	            } else {
-	                value = $element.attr(method);
-	            }
+				// Force non-HTML5 browsers to return bool
+				value = !!value;
+			} else {
+				value = $element.attr( method );
+			}
 
-	            this.normalizeAttributeRule(rules, type, method, value);
-	        }
-	    }
+			this.normalizeAttributeRule( rules, type, method, value );
+		}
 
-	    // 'maxlength' may be returned as -1, 2147483647 ( IE ) and 524288 ( safari ) for text inputs
+		// 'maxlength' may be returned as -1, 2147483647 ( IE ) and 524288 ( safari ) for text inputs
 		if ( rules.maxlength && /-1|2147483647|524288/.test( rules.maxlength ) ) {
 			delete rules.maxlength;
 		}
@@ -1264,12 +1245,10 @@ $.extend( $.validator, {
 			method, value;
 
 		for ( method in $.validator.methods ) {
-	        if ($.validator.methods.hasOwnProperty(method)) {
-	            value = $element.data("rule" + method.charAt(0).toUpperCase() + method.substring(1).toLowerCase());
-	            this.normalizeAttributeRule(rules, type, method, value);
-	        }
-	    }
-	    return rules;
+			value = $element.data( "rule" + method.charAt( 0 ).toUpperCase() + method.substring( 1 ).toLowerCase() );
+			this.normalizeAttributeRule( rules, type, method, value );
+		}
+		return rules;
 	},
 
 	staticRules: function( element ) {
@@ -1470,8 +1449,7 @@ $.extend( $.validator, {
 
 		// https://jqueryvalidation.org/step-method/
 		step: function( value, element, param ) {
-		    var decimals;
-		    var type = $( element ).attr( "type" ),
+			var type = $( element ).attr( "type" ),
 				errorMessage = "Step attribute on input type " + type + " is not supported.",
 				supportedTypes = [ "text", "number", "range" ],
 				re = new RegExp( "\\b" + type + "\\b" ),
@@ -1488,7 +1466,8 @@ $.extend( $.validator, {
 				toInt = function( num ) {
 					return Math.round( num * Math.pow( 10, decimals ) );
 				},
-				valid = true;
+				valid = true,
+				decimals;
 
 			// Works only for text, number and range input types
 			// TODO find a way to support input types date, datetime, datetime-local, month, time and week
@@ -1536,7 +1515,7 @@ $.extend( $.validator, {
 			previous.originalMessage = previous.originalMessage || this.settings.messages[ element.name ][ method ];
 			this.settings.messages[ element.name ][ method ] = previous.message;
 
-			param = typeof param === "string" || param;
+			param = typeof param === "string" && { url: param } || param;
 			optionDataString = $.param( $.extend( { data: value }, param.data ) );
 			if ( previous.old === optionDataString ) {
 				return previous.valid;
@@ -1619,6 +1598,4 @@ if ( $.ajaxPrefilter ) {
 	};
 }
 return $;
-    }));
-// ReSharper restore InconsistentFunctionReturns
-// ReSharper restore QualifiedExpressionMaybeNull
+}));
