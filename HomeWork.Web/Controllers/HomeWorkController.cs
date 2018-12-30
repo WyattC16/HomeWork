@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace HomeWork.Web.Controllers
 {
-    public class HomeWorkController : BaseJsonController
+    public class HomeWorkController : BaseController
     {
 
         public HomeWorkController(IHostingEnvironment iHostingEnvironment) : base(iHostingEnvironment)

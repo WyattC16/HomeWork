@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeWork.Web.Controllers
 {
-    public class ClassController : BaseJsonController
+    public class ClassController : BaseController
     {
         public ClassController(IHostingEnvironment iHostingEnvironment) : base(iHostingEnvironment)
         {
