@@ -4,7 +4,7 @@ namespace HomeWork.Web.Pages
 {
     public class ContactModel : PageModel
     {
-        public string Message { get; set; }
+        public string Message { get; private set; }
 
         public void OnGet()
         {
