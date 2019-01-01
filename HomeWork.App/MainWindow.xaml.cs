@@ -12,10 +12,9 @@ namespace HomeWork.App
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            const string webServerAddress = "https://localhost:44382/";
             ChromiumContainer.Content = new CefSharp.Wpf.ChromiumWebBrowser()
             {
-                Address = webServerAddress
+                Address = "https://localhost:44365/"
             };
         }
         

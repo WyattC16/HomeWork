@@ -1,14 +1,10 @@
-{
+﻿{
   "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iis": {
-      "applicationUrl": "http://localhost/HomeWork.Web",
-      "sslPort": 44382
-    },
+    "windowsAuthentication": false, 
+    "anonymousAuthentication": true, 
     "iisExpress": {
-      "applicationUrl": "http://localhost:22901",
-      "sslPort": 44382
+      "applicationUrl": "http://localhost:42610",
+      "sslPort": 44365
     }
   },
   "profiles": {
@@ -17,16 +13,15 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "use64Bit": true
+      }
     },
     "HomeWork.Web": {
-      "commandName": "IIS",
+      "commandName": "Project",
       "launchBrowser": true,
+      "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+      }
     }
   }
 }

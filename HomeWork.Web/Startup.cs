@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,20 +8,30 @@ using Swashbuckle.AspNetCore.Swagger;
 
 namespace HomeWork.Web
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
     public class Startup
     {
-        public Startup(IConfiguration configuration) => Configuration = configuration;
-        // ReSharper disable once MemberCanBePrivate.Global
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        // ReSharper disable UnusedAutoPropertyAccessor.Global
+        // ReSharper disable MemberCanBePrivate.Global
         public IConfiguration Configuration { get; }
+        // ReSharper restore MemberCanBePrivate.Global
+        // ReSharper restore UnusedAutoPropertyAccessor.Global
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services
                 .AddSwaggerGen(c =>
                 {
-                    c.SwaggerDoc("v1", new Info { Title = "HomeWork Web Controllers", Version = "v1" });
+                    c.SwaggerDoc("v1", new Info
+                    {
+                        Title = "HomeWork Web",
+                        Version = "v1"
+                    });
                 })
                 .Configure<CookiePolicyOptions>(options =>
                 {
@@ -36,18 +46,22 @@ namespace HomeWork.Web
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             (env.IsDevelopment() ? 
-                    app.UseDeveloperExceptionPage()
-                        .UseSwagger()
-                        .UseSwaggerUI(c =>
-                        {
-                            c.SwaggerEndpoint("/swagger/v1/swagger.json", "HomeWork Controllers V1");
-                            c.RoutePrefix = "controllers/swagger";
-                        }) : 
-                    app.UseExceptionHandler("/Error").UseHsts())
+                app.UseDeveloperExceptionPage()
+                    .UseSwagger()
+                    .UseSwaggerUI(c =>
+                    {
+                        c.SwaggerEndpoint("/swagger/v1/swagger.json", "HomeWork Controllers V1");
+                        c.RoutePrefix = "swagger/ui";
+                    }) : 
+                app.UseExceptionHandler("/Home/Error").UseHsts())
                 .UseHttpsRedirection()
                 .UseStaticFiles()
-                .UseCookiePolicy()
-                .UseMvc();
+                .UseMvc(routes =>
+                {
+                    routes.MapRoute(
+                        name: "default",
+                        template: "");
+                });
         }
     }
 }
