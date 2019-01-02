@@ -15,9 +15,9 @@ namespace HomeWork.Web.Controllers
         private string DataPath { get; }
         public HomeController(IHostingEnvironment iHostingEnvironment)
         {
-            DataPath = $"{iHostingEnvironment.ContentRootPath}/json/HomeWork.json";
+            DataPath = $"{iHostingEnvironment.ContentRootPath}\\json\\HomeWork.json";
         }
-        
+
         [HttpGet("")]
         public IActionResult Index()
         {
@@ -41,23 +41,29 @@ namespace HomeWork.Web.Controllers
         {
             SchoolHistory history;
             using (var reader = new StreamReader(DataPath))
+            {
                 history = JsonConvert.DeserializeObject<SchoolHistory>(reader.ReadToEnd());
-            if (history.Semesters.Any(x => 
-                x.Season == semester.Season && 
-                x.Year == semester.Year))
-            {
-                var oldSemester = history.Semesters.Single(x =>
+                if (history.Semesters.Any(x =>
                     x.Season == semester.Season &&
-                    x.Year == semester.Year);
-                history.Semesters = history.Semesters.Select(x => x == oldSemester ? semester : x);
+                    x.Year == semester.Year))
+                {
+                    var oldSemester = history.Semesters.Single(x =>
+                        x.Season == semester.Season &&
+                        x.Year == semester.Year);
+                    history.Semesters = history.Semesters.Select(x => x == oldSemester ? semester : x);
+                }
+                else
+                {
+                    var oldSemesters = history.Semesters.ToList();
+                    oldSemesters.Add(semester);
+                    history.Semesters = oldSemesters;
+                }
             }
-            else
-            {
-                var oldSemesters = history.Semesters.ToList();
-                oldSemesters.Add(semester);
-                history.Semesters = oldSemesters;
-            }
-            return Ok(history);
+            var task = System.IO.File.WriteAllTextAsync(DataPath, 
+                JsonConvert.SerializeObject(history, 
+                    Formatting.Indented));
+            task.Wait();
+            return Ok();
         }
 
         [HttpGet("/Error")]

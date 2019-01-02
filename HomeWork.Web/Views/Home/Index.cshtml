@@ -1,5 +1,5 @@
-﻿@using System.Net.Http
-@using HomeWork.Web.Models.Enum
+﻿@using HomeWork.Web.Models.Enum
+@using Newtonsoft.Json
 @model IndexViewModel
 @{
     ViewData["Title"] = "Home Page";
@@ -65,8 +65,8 @@
                onclick="location.href='/'+ document.getElementById('Season').value + '/' + document.getElementById('Year').value;"
                value="Search" />
     </div>
-    <div id="SaveSemester" style="width:50%;text-align: right;">
-        <input id="Save" type="button" value="Save" />
+    <div id="SaveSemester" style="width: 50%; text-align: right;">
+        <input id="Save" type="button" onclick="saveSemester(@JsonConvert.SerializeObject(Semester, Formatting.Indented))" value="Save" />
     </div>
 </div>
 <div class="tableRow" id="Classes" width="100%">
