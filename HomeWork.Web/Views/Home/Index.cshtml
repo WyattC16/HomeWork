@@ -76,14 +76,17 @@ private Semester Semester => _semester ?? (_semester = Model.Semester);
             <table id="@table.Title" style="display: inline-block; border: 1px solid black;">
                 <tbody>
                     <tr id="@(table.Title) Headers">
-                        <th contenteditable style="border: 1px solid black;" width:100%>@table.Title</th>
+                        <th contenteditable="true" colspan="2" style="border: 1px solid black;" width:100%>@table.Title</th>
                         <th style="border: 1px solid black;" width:100%>Due Date</th>
                         <th style="border: 1px solid black;" width:100%>Status</th>
                     </tr>
                     @foreach (var homeWork in table.HomeWorks)
                     {
                         <tr id="@homeWork.Title" style="border: 1px solid black; background: @GetBorderBackgroundColor(homeWork.DueDate, homeWork.Status);">
-                            <td contenteditable width:100% style="border: 1px solid black;">@homeWork.Title</td>
+                            <td width:100% style="border: 1px solid black;">
+                                <button onclick="deleteRow(this)"></button>
+                            </td>
+                            <td contenteditable="true" width:100% style="border: 1px solid black;">@homeWork.Title</td>
                             <td width:100% style="border: 1px solid black;">
                                 <input type="date" style="border: none; background: @GetBorderBackgroundColor(homeWork.DueDate, homeWork.Status);" value="@homeWork.DueDate.ToString("yyyy-MM-dd")" />
                             </td>
@@ -97,6 +100,11 @@ private Semester Semester => _semester ?? (_semester = Model.Semester);
                             </td>
                         </tr>
                     }
+                    <tr style="border: 1px solid black;" width:100%>
+                        <td colspan="4">
+                            <button onclick="addNewRow(this)">Add new row</button>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         }

@@ -64,9 +64,10 @@ namespace HomeWork.Web.Controllers
                     semesters = oldSemesters;
                 }
             }
-            System.IO.File.WriteAllTextAsync(DataPath, 
+            var task = System.IO.File.WriteAllTextAsync(DataPath, 
                 JsonConvert.SerializeObject(semesters, 
-                    Formatting.Indented)).Start();
+                    Formatting.Indented));
+            task.Wait();
             return Ok();
         }
 
