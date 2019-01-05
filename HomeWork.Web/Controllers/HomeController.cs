@@ -40,6 +40,10 @@ namespace HomeWork.Web.Controllers
         public IActionResult SaveJson([FromBody] Semester semester)
         {
             SchoolHistory history;
+            if (semester == null)
+            {
+                return BadRequest();
+            }
             using (var reader = new StreamReader(DataPath))
             {
                 history = JsonConvert.DeserializeObject<SchoolHistory>(reader.ReadToEnd());
@@ -59,10 +63,9 @@ namespace HomeWork.Web.Controllers
                     history.Semesters = oldSemesters;
                 }
             }
-            var task = System.IO.File.WriteAllTextAsync(DataPath, 
+            System.IO.File.WriteAllTextAsync(DataPath, 
                 JsonConvert.SerializeObject(history, 
-                    Formatting.Indented));
-            task.Wait();
+                    Formatting.Indented)).Start();
             return Ok();
         }
 

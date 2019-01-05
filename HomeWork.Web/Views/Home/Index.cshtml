@@ -1,24 +1,23 @@
 ﻿@using HomeWork.Web.Models.Enum
-@using Newtonsoft.Json
 @model IndexViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
 @functions
 {
-    private static string GetBorderBackgroundColor(DateTime dueDate, Status status) =>
-        status == Status.Submitted ? "white" :
-            dueDate.Date <= DateTime.Today.Date ? "red;" :
-                dueDate.Date <= DateTime.Today.AddDays(7).Date ? "yellow;" :
-                    dueDate.Date <= DateTime.Today.AddMonths(1).Date ? "green;" :
-                        "blue;";
-    private static string SelectedOption(Status status, Status status2) =>
-        status.Equals(status2) ? "selected=\"selected\"" : "";
-    private static string FormatStatus(Status status) =>
-        status.ToString("F").SplitByUpperCase().Join(" ").ToProper();
+private static string GetBorderBackgroundColor(DateTime dueDate, Status status) =>
+    status == Status.Submitted ? "white" :
+        dueDate.Date <= DateTime.Today.Date ? "red" :
+            dueDate.Date <= DateTime.Today.AddDays(7).Date ? "yellow" :
+                dueDate.Date <= DateTime.Today.AddMonths(1).Date ? "green" :
+                    "blue";
+private static string SelectedOption(Status status, Status status2) =>
+    status.Equals(status2) ? "selected" : "";
+private static string FormatStatus(Status status) =>
+    status.ToString("F").SplitByUpperCase().Join(" ").ToProper();
 
-    private Semester _semester;
-    private Semester Semester => _semester ?? (_semester = Model.Semester);
+private Semester _semester;
+private Semester Semester => _semester ?? (_semester = Model.Semester);
 }
 <div class="row" id="ControlContainer">
     <div id="SearchSemesters" style="width:50%;text-align: left;">
@@ -28,8 +27,8 @@
                 <option value="null" selected disabled hidden>Select the year to view</option>
             }
             @foreach (var year in Enumerable.Range(
-               DateTime.Now.AddYears(-5).Year,
-               6).OrderByDescending(x => x))
+            DateTime.Now.AddYears(-5).Year,
+            6).OrderByDescending(x => x))
             {
                 if (Model.Semester?.Year != null && Model.Semester.Year == year)
                 {
@@ -49,7 +48,7 @@
             }
             @foreach (var season in (Seasons[])Enum.GetValues(typeof(Seasons)))
             {
-                if (!string.IsNullOrEmpty(Model.Semester?.Season.ToString("F")) && 
+                if (!string.IsNullOrEmpty(Model.Semester?.Season.ToString("F")) &&
                     Model.Semester.Season == season)
                 {
                     <option value="@season" selected="selected">@season</option>
@@ -66,7 +65,7 @@
                value="Search" />
     </div>
     <div id="SaveSemester" style="width: 50%; text-align: right;">
-        <input id="Save" type="button" onclick="saveSemester(@JsonConvert.SerializeObject(Semester, Formatting.Indented))" value="Save" />
+        <input id="Save" type="button" onclick="saveSemester()" value="Save" />
     </div>
 </div>
 <div class="tableRow" id="Classes" width="100%">
@@ -74,29 +73,31 @@
     {
         foreach (var table in Semester.Classes)
         {
-            <table id=@table.Title style="display: inline-block; border: 1px solid black;">
-                <tr id="Headers">
-                    <th style="border: 1px solid black;" width:100%>@table.Title</th>
-                    <th style="border: 1px solid black;" width:100%>Due Date</th>
-                    <th style="border: 1px solid black;" width:100%>Status</th>
-                </tr>
-                @foreach (var homeWork in table.HomeWorks)
-                {
-                    <tr id=@homeWork.Title style="border: 1px solid black; background: @GetBorderBackgroundColor(homeWork.DueDate, homeWork.Status)">
-                        <td contenteditable width:100% style="border: 1px solid black;">@homeWork.Title</td>
-                        <td width:100% style="border: 1px solid black;">
-                            <input type="date" style="border: none; background: @GetBorderBackgroundColor(homeWork.DueDate, homeWork.Status);" value="@homeWork.DueDate.ToString("yyyy-MM-dd")"/>
-                        </td>
-                        <td width:100% style="border: 1px solid black;">
-                            <select style="border: none; background: @GetBorderBackgroundColor(homeWork.DueDate, homeWork.Status);">
-                                @foreach (var status in (Status[])Enum.GetValues(typeof(Status)))
-                                {
-                                    @:<option @SelectedOption(status, homeWork.Status)> @FormatStatus(status) </option>
-                                }
-                            </select>
-                        </td>
+            <table id="@table.Title" style="display: inline-block; border: 1px solid black;">
+                <tbody>
+                    <tr id="@(table.Title) Headers">
+                        <th contenteditable style="border: 1px solid black;" width:100%>@table.Title</th>
+                        <th style="border: 1px solid black;" width:100%>Due Date</th>
+                        <th style="border: 1px solid black;" width:100%>Status</th>
                     </tr>
-                }
+                    @foreach (var homeWork in table.HomeWorks)
+                    {
+                        <tr id="@homeWork.Title" style="border: 1px solid black; background: @GetBorderBackgroundColor(homeWork.DueDate, homeWork.Status);">
+                            <td contenteditable width:100% style="border: 1px solid black;">@homeWork.Title</td>
+                            <td width:100% style="border: 1px solid black;">
+                                <input type="date" style="border: none; background: @GetBorderBackgroundColor(homeWork.DueDate, homeWork.Status);" value="@homeWork.DueDate.ToString("yyyy-MM-dd")" />
+                            </td>
+                            <td width:100% style="border: 1px solid black;">
+                                <select style="border: none; background: @GetBorderBackgroundColor(homeWork.DueDate, homeWork.Status);">
+                                    @foreach (var status in (Status[])Enum.GetValues(typeof(Status)))
+                                    {
+                                        @:<option @SelectedOption(status, homeWork.Status)> @FormatStatus(status) </option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
             </table>
         }
     }
