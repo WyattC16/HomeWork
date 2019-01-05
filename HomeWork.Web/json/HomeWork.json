@@ -1,57 +1,53 @@
-{
-  "Semesters": [
-    {
-      "classes": [
-        {
-          "HomeWorks": [
-            {
-              "DueDate": "2018-12-04T00:00:00",
-              "Status": 0,
-              "Title": "Homework 1"
-            }
-          ],
-          "Title": "Class 1"
-        },
-        {
-          "HomeWorks": [
-            {
-              "DueDate": "2019-02-24T15:42:04.232Z",
-              "Status": 0,
-              "Title": "HomeWork 2"
-            },
-            {
-              "DueDate": "2019-01-05T15:42:04.232Z",
-              "Status": 1,
-              "Title": "HomeWork 3"
-            }
-          ],
-          "Title": "Class 2"
-        },
-        {
-          "HomeWorks": [
-            {
-              "DueDate": "2018-12-27T15:42:04.232Z",
-              "Status": 2,
-              "Title": "HomeWork 4"
-            }
-          ],
-          "Title": "Class 3"
-        },
-        {
-          "HomeWorks": [
-            {
-              "DueDate": "2019-1-1T15:42:04.232Z",
-              "Status": 0,
-              "Title": "HomeWork 5"
-            }
-          ],
-          "Title": "Class 4"
-        }
-      ],
-      "season": "Spring",
-      "year": 2019
-    }
-  ],
-  "User": "wyatt"
-}
-
+[
+  {
+    "Classes": [
+      {
+        "HomeWorks": [
+          {
+            "DueDate": "2018-12-04T00:00:00",
+            "Status": 0,
+            "Title": "Homework 1"
+          }
+        ],
+        "Title": "Class 1"
+      },
+      {
+        "HomeWorks": [
+          {
+            "DueDate": "2019-02-24T00:00:00",
+            "Status": 0,
+            "Title": "HomeWork 2"
+          },
+          {
+            "DueDate": "2019-01-05T00:00:00",
+            "Status": 1,
+            "Title": "HomeWork 3"
+          }
+        ],
+        "Title": "Class 2"
+      },
+      {
+        "HomeWorks": [
+          {
+            "DueDate": "2018-12-27T00:00:00",
+            "Status": 2,
+            "Title": "HomeWork 4"
+          }
+        ],
+        "Title": "Class 3"
+      },
+      {
+        "HomeWorks": [
+          {
+            "DueDate": "2019-01-01T00:00:00",
+            "Status": 0,
+            "Title": "HomeWork 5"
+          }
+        ],
+        "Title": "Class 4"
+      }
+    ],
+    "Season": 0,
+    "Year": 2019
+  }
+]

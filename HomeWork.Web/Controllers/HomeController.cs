@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
@@ -30,8 +31,8 @@ namespace HomeWork.Web.Controllers
             using (var reader = new StreamReader(DataPath))
                 return View("Index",
                     new IndexViewModel(
-                        JsonConvert.DeserializeObject<SchoolHistory>(reader.ReadToEnd()).
-                            Semesters.SingleOrDefault(x =>
+                        JsonConvert.DeserializeObject<IEnumerable<Semester>>(reader.ReadToEnd()).
+                            SingleOrDefault(x =>
                                 x.Year == year &&
                                 x.Season == season)));
         }
@@ -39,32 +40,32 @@ namespace HomeWork.Web.Controllers
         [HttpPut("")]
         public IActionResult SaveJson([FromBody] Semester semester)
         {
-            SchoolHistory history;
+            List<Semester> semesters;
             if (semester == null)
             {
                 return BadRequest();
             }
             using (var reader = new StreamReader(DataPath))
             {
-                history = JsonConvert.DeserializeObject<SchoolHistory>(reader.ReadToEnd());
-                if (history.Semesters.Any(x =>
+                semesters = JsonConvert.DeserializeObject<List<Semester>>(reader.ReadToEnd());
+                if (semesters.Any(x =>
                     x.Season == semester.Season &&
                     x.Year == semester.Year))
                 {
-                    var oldSemester = history.Semesters.Single(x =>
+                    var oldSemester = semesters.Single(x =>
                         x.Season == semester.Season &&
                         x.Year == semester.Year);
-                    history.Semesters = history.Semesters.Select(x => x == oldSemester ? semester : x);
+                    semesters = semesters.Select(x => x == oldSemester ? semester : x).ToList();
                 }
                 else
                 {
-                    var oldSemesters = history.Semesters.ToList();
+                    var oldSemesters = semesters.ToList();
                     oldSemesters.Add(semester);
-                    history.Semesters = oldSemesters;
+                    semesters = oldSemesters;
                 }
             }
             System.IO.File.WriteAllTextAsync(DataPath, 
-                JsonConvert.SerializeObject(history, 
+                JsonConvert.SerializeObject(semesters, 
                     Formatting.Indented)).Start();
             return Ok();
         }
