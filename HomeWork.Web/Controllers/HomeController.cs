@@ -34,7 +34,11 @@ namespace HomeWork.Web.Controllers
                         JsonConvert.DeserializeObject<IEnumerable<Semester>>(reader.ReadToEnd()).
                             SingleOrDefault(x =>
                                 x.Year == year &&
-                                x.Season == season)));
+                                x.Season == season) ?? new Semester
+                        {
+                            Season = season,
+                            Year = year ?? default
+                        }));
         }
 
         [HttpPut("")]

@@ -61,7 +61,8 @@ function addNewRow(button) {
     var td1 = newRow.insertCell(1);
     td1.setAttribute('contenteditable','true');
     td1.setAttribute('width', '100%');
-    td1.setAttribute('style','border: 1px solid black;')
+    td1.setAttribute('style', 'border: 1px solid black;');
+    td1.textContent = 'new assignment';
     var td2 = newRow.insertCell(2);
     td2.setAttribute('width', '100%');
     td2.setAttribute('style', 'border: 1px solid black;');
@@ -72,7 +73,8 @@ function addNewRow(button) {
     td2.appendChild(dueDate);
     var td3 = newRow.insertCell(3);
     td3.setAttribute('width', '100%');
-    td3.setAttribute('style', 'border: 1px solid black;')
+    td3.setAttribute('style', 'border: 1px solid black;');
+    td3.setAttribute('colspan', '2');
     var status = document.createElement('select');
     status.setAttribute('style', 'border: none; background:white;');
     var notDone = document.createElement('option');
@@ -86,4 +88,52 @@ function addNewRow(button) {
     submitted.text = 'Submitted';
     status.appendChild(submitted);
     td3.appendChild(status);
+}
+
+function deleteClass(button) {
+    var table = button.parentElement.parentElement.parentElement.parentElement;
+    table.parentElement.removeChild(table);
+}
+
+function addSchoolClass() {
+    var classContainer = document.getElementById('Classes');
+    var table = document.createElement('table');
+    var tbody = document.createElement('table');
+    var tr = tbody.insertRow(0);
+    tr.setAttribute('id', 'Headers');
+    var th0 = document.createElement('th');
+    th0.setAttribute('contenteditable', 'true');
+    th0.setAttribute('colspan', '2');
+    th0.setAttribute('style', 'border: 1px solid black;');
+    th0.setAttribute('width', '100%');
+    th0.textContent = 'new class';
+    tr.appendChild(th0);
+    var th1 = document.createElement('th');
+    th1.setAttribute('style', 'border: 1px solid black;');
+    th1.setAttribute('width', '100%');
+    th1.textContent = 'Due Date';
+    tr.appendChild(th1);
+    var th2 = document.createElement('th');
+    th2.setAttribute('style', 'border: 1px solid black;');
+    th2.setAttribute('width', '100%');
+    th2.textContent = 'Status';
+    tr.appendChild(th2);
+    var th3 = document.createElement('th');
+    th3.setAttribute('style', 'border: 1px solid black;');
+    th3.setAttribute('width', '100%');
+    var deleteClass = document.createElement('button');
+    deleteClass.setAttribute('onclick', 'deleteClass(this)');
+    th3.appendChild(deleteClass);
+    tr.appendChild(th3);
+    var tr1 = tbody.insertRow(1);
+    tr1.setAttribute('style', 'border: 1px solid black;');
+    tr1.setAttribute('width', '100%');
+    var td = tr1.insertCell(0);
+    td.setAttribute('colspan', '5');
+    var buttonAddRow = document.createElement('button');
+    buttonAddRow.setAttribute('onclick', 'addNewRow(this)');
+    buttonAddRow.textContent = 'Add new row';
+    td.appendChild(buttonAddRow);
+    table.appendChild(tbody);
+    classContainer.appendChild(table);
 }

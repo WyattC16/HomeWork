@@ -20,15 +20,15 @@ private Semester _semester;
 private Semester Semester => _semester ?? (_semester = Model.Semester);
 }
 <div class="row" id="ControlContainer">
-    <div id="SearchSemesters" style="width:50%;text-align: left;">
+    <div id="SearchSemesters" style="width:33%;text-align: left;">
         <select id="Year">
             @if (Model.Semester?.Year == null)
             {
                 <option value="null" selected disabled hidden>Select the year to view</option>
             }
             @foreach (var year in Enumerable.Range(
-            DateTime.Now.AddYears(-5).Year,
-            6).OrderByDescending(x => x))
+                DateTime.Now.AddYears(-5).Year,
+                6).Reverse())
             {
                 if (Model.Semester?.Year != null && Model.Semester.Year == year)
                 {
@@ -64,9 +64,15 @@ private Semester Semester => _semester ?? (_semester = Model.Semester);
                onclick="location.href='/'+ document.getElementById('Season').value + '/' + document.getElementById('Year').value;"
                value="Search" />
     </div>
-    <div id="SaveSemester" style="width: 50%; text-align: right;">
-        <input id="Save" type="button" onclick="saveSemester()" value="Save" />
+    <div id="AddClass" style="width: 34%; text-align: center;">
+        <input id="AddClassButton" type="button" onclick="addSchoolClass()" value="Add Class" />
     </div>
+    @if (Model.Semester != null)
+    {
+        <div id="SaveSemester" style="width: 33%; text-align: right;">
+            <input id="Save" type="button" onclick="saveSemester()" value="Save" />
+        </div>
+    }
 </div>
 <div class="tableRow" id="Classes" width="100%">
     @if (@Semester?.Classes != null && Semester.Classes.Any())
@@ -79,8 +85,11 @@ private Semester Semester => _semester ?? (_semester = Model.Semester);
                         <th contenteditable="true" colspan="2" style="border: 1px solid black;" width:100%>@table.Title</th>
                         <th style="border: 1px solid black;" width:100%>Due Date</th>
                         <th style="border: 1px solid black;" width:100%>Status</th>
+                        <th style="border: 1px solid black;" width:100%>
+                            <button onclick="deleteClass(this)"></button>
+                        </th>
                     </tr>
-                    @foreach (var homeWork in table.HomeWorks)
+                    @foreach (var homeWork in table.HomeWorks.OrderBy(x=>x.Status).ThenBy(x => x.DueDate))
                     {
                         <tr id="@homeWork.Title" style="border: 1px solid black; background: @GetBorderBackgroundColor(homeWork.DueDate, homeWork.Status);">
                             <td width:100% style="border: 1px solid black;">
@@ -90,7 +99,7 @@ private Semester Semester => _semester ?? (_semester = Model.Semester);
                             <td width:100% style="border: 1px solid black;">
                                 <input type="date" style="border: none; background: @GetBorderBackgroundColor(homeWork.DueDate, homeWork.Status);" value="@homeWork.DueDate.ToString("yyyy-MM-dd")" />
                             </td>
-                            <td width:100% style="border: 1px solid black;">
+                            <td width:100% colspan="2" style="border: 1px solid black;">
                                 <select style="border: none; background: @GetBorderBackgroundColor(homeWork.DueDate, homeWork.Status);">
                                     @foreach (var status in (Status[])Enum.GetValues(typeof(Status)))
                                     {
@@ -101,7 +110,7 @@ private Semester Semester => _semester ?? (_semester = Model.Semester);
                         </tr>
                     }
                     <tr style="border: 1px solid black;" width:100%>
-                        <td colspan="4">
+                        <td colspan="5">
                             <button onclick="addNewRow(this)">Add new row</button>
                         </td>
                     </tr>
