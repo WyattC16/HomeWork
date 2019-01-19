@@ -97,7 +97,8 @@ function deleteClass(button) {
 
 function addSchoolClass() {
     var classContainer = document.getElementById('Classes');
-    var tbody = document.createElement('table');
+    var table = document.createElement('table');
+    var tbody = document.createElement('tbody');
     var tr = tbody.insertRow(0);
     tr.setAttribute('id', 'Headers');
     var th0 = document.createElement('th');
