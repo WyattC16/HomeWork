@@ -1,7 +1,8 @@
 ﻿@using HomeWork.Web.Models.Enum
 @model IndexViewModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = Model.Semester == null ? "Home" :
+        $"{Semester.Year}-{Semester.Season:F}";
 }
 @functions
 {
@@ -27,8 +28,8 @@ private Semester Semester => _semester ?? (_semester = Model.Semester);
                 <option value="null" selected disabled hidden>Select the year to view</option>
             }
             @foreach (var year in Enumerable.Range(
-                DateTime.Now.AddYears(-5).Year,
-                6).Reverse())
+              DateTime.Now.AddYears(-5).Year,
+              6).Reverse())
             {
                 if (Model.Semester?.Year != null && Model.Semester.Year == year)
                 {
@@ -89,7 +90,7 @@ private Semester Semester => _semester ?? (_semester = Model.Semester);
                             <button onclick="deleteClass(this)"></button>
                         </th>
                     </tr>
-                    @foreach (var homeWork in table.HomeWorks.OrderBy(x=>x.Status).ThenBy(x => x.DueDate))
+                    @foreach (var homeWork in table.HomeWorks.OrderBy(x => x.Status).ThenBy(x => x.DueDate))
                     {
                         <tr id="@homeWork.Title" style="border: 1px solid black; background: @GetBorderBackgroundColor(homeWork.DueDate, homeWork.Status);">
                             <td width:100% style="border: 1px solid black;">
