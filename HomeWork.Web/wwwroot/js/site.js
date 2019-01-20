@@ -137,3 +137,29 @@ function addSchoolClass() {
     table.appendChild(tbody);
     classContainer.appendChild(table);
 }
+
+function semesterSearch() {
+    var season = document.getElementById('Season');
+    var year = document.getElementById('Year');
+    var isSeasonDefault = isDefaultOption(season);
+    var isYearDefault = isDefaultOption(year);
+    if (!isSeasonDefault && !isYearDefault) {
+        location.href = '/' + season.value + '/' + year.value;
+    }
+    else if (isSeasonDefault && isYearDefault) {
+        alert('Please select a year and season');
+    }
+    else if (isSeasonDefault) {
+        alert('Please select a season');
+    }
+    else if (isYearDefault) {
+        alert('Please select a year');
+    }
+}
+
+function isDefaultOption(element) {
+    var selected = element.options[element.selectedIndex];
+    return (selected.hasAttribute('selected') &&
+        selected.hasAttribute('disabled') &&
+        selected.hasAttribute('hidden'));
+}

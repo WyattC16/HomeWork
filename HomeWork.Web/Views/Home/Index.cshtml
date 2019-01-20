@@ -2,7 +2,7 @@
 @model IndexViewModel
 @{
     ViewData["Title"] = Model.Semester == null ? "Home" :
-        $"{Semester.Year}-{Semester.Season:F}";
+        $"{Model.Semester.Year}-{Model.Semester.Season:F}";
 }
 @functions
 {
@@ -16,12 +16,9 @@ private static string SelectedOption(Status status, Status status2) =>
     status.Equals(status2) ? "selected" : "";
 private static string FormatStatus(Status status) =>
     status.ToString("F").SplitByUpperCase().Join(" ").ToProper();
-
-private Semester _semester;
-private Semester Semester => _semester ?? (_semester = Model.Semester);
 }
 <div class="row" id="ControlContainer">
-    <div id="SearchSemesters" style="width:33%;text-align: left;">
+    <div id="SearchSemesters" style="width:@(Model.Semester != null ? "33%" : "100%");text-align: left;">
         <select id="Year">
             @if (Model.Semester?.Year == null)
             {
@@ -62,23 +59,23 @@ private Semester Semester => _semester ?? (_semester = Model.Semester);
         </select>
         &nbsp;
         <input id="Search" type="button"
-               onclick="location.href='/'+ document.getElementById('Season').value + '/' + document.getElementById('Year').value;"
+               onclick="semesterSearch()"
                value="Search" />
-    </div>
-    <div id="AddClass" style="width: 34%; text-align: center;">
-        <input id="AddClassButton" type="button" onclick="addSchoolClass()" value="Add Class" />
     </div>
     @if (Model.Semester != null)
     {
+        <div id="AddClass" style="width: 34%; text-align: center;">
+            <input id="AddClassButton" type="button" onclick="addSchoolClass()" value="Add Class" />
+        </div>
         <div id="SaveSemester" style="width: 33%; text-align: right;">
             <input id="Save" type="button" onclick="saveSemester()" value="Save" />
         </div>
     }
 </div>
 <div class="tableRow" id="Classes" width="100%">
-    @if (@Semester?.Classes != null && Semester.Classes.Any())
+    @if (@Model.Semester?.Classes != null && Model.Semester.Classes.Any())
     {
-        foreach (var table in Semester.Classes)
+        foreach (var table in Model.Semester.Classes)
         {
             <table id="@table.Title" style="display: inline-block; border: 1px solid black;">
                 <tbody>
