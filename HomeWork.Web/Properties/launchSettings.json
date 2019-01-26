@@ -1,7 +1,7 @@
-﻿{
+{
   "iisSettings": {
-    "windowsAuthentication": false, 
-    "anonymousAuthentication": true, 
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
     "iisExpress": {
       "applicationUrl": "http://localhost:42610",
       "sslPort": 44365
@@ -22,6 +22,11 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "Electron.NET App": {
+      "commandName": "Executable",
+      "executablePath": "dotnet.exe",
+      "commandLineArgs": "electronize start"
     }
   }
 }
