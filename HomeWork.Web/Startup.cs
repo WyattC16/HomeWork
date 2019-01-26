@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using ElectronNET.API;
+using ElectronNET.API.Entities;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -62,6 +64,18 @@ namespace HomeWork.Web
                         name: "default",
                         template: "");
                 });
+            if (HybridSupport.IsElectronActive)
+                ElectronBootstrap();
+        }
+
+        private static async void ElectronBootstrap()
+        {
+            var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions
+            {
+                Show = false,
+                DarkTheme = true
+            });
+            browserWindow.OnReadyToShow += () => browserWindow.Show();
         }
     }
 }

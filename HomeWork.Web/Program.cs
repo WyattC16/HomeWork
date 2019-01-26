@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore;
+﻿using ElectronNET.API;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace HomeWork.Web
@@ -8,6 +9,6 @@ namespace HomeWork.Web
         public static void Main(string[] args) => CreateWebHostBuilder(args).Build().Run();
 
         private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args).UseStartup<Startup>();
+            WebHost.CreateDefaultBuilder(args).UseElectron(args).UseStartup<Startup>();
     }
 }
